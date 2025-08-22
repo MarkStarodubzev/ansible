@@ -1,0 +1,13 @@
+- name: Ping Windows Machines
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+  - name: Ping Windows machines
+    win_ping:
+      data: "Pinging from Ansible"
+    register: ping_result
+
+  - name: Display ping results
+    debug:
+      var: ping_result

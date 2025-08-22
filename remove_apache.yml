@@ -1,0 +1,14 @@
+
+- hosts: Linux
+  become: true
+  tasks:
+
+  - name: Apache2 Uninstall package
+    apt:
+      name: apache2
+      state: absent
+
+  - name: add php support for apache2
+    apt:
+      name: libapache2-mod-php
+      state: absent
