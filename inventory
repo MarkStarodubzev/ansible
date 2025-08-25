@@ -2,5 +2,14 @@
 10.0.2.15
 ansibleserver
 
+[windows]
+10.0.2.4
+
+[windows:vars]
+ansible_connection=winrm
+ansible_user=Administrator
+ansible_password=Test123!
+ansible_port=5985
+ansible_winrm_transport=basic
 
 

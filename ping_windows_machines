@@ -1,5 +1,4 @@
-- name: Ping Windows Machines
-  hosts: windows
+- hosts: windows
   gather_facts: no
   tasks:
 
