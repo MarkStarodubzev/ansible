@@ -2,9 +2,16 @@
 - hosts: Linux
   become: true
   tasks:
-
+  
+  - name: Install updates (Ubuntu)
+    tags: update
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
 
   - name: Apache2 & php support Install package
+    tags: packages
     apt:
       name: 
         - apache2
