@@ -1,14 +1,41 @@
 
-- hosts: all
+- hosts: Linux
   become: true
   tasks:
-  
+
   - name: Install updates (Ubuntu)
     tags: update
     apt:
       upgrade: dist
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
+
+
+  - name: create simone user
+    tags: always
+    user:
+      name: simone
+      groups: sudo
+      comment: Simone User
+      shell: /bin/bash
+      state: present
+      create_home: yes
+
+  - name: set authorized key for simone user
+    tags: always
+    authorized_key:
+      user: simone
+      state: present
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBI0mbXJD/J8oo7AznJoZUJBYYb/F+i4FjtsDWpKaO ansible"
+
+  - name: add sudoers file for simone user
+    tags: always
+    copy:
+      src: sudoers_simone
+      dest: /etc/sudoers.d/simone
+      owner: root
+      group: root
+      mode: '0440'
 
 - hosts: workstation
   become: true
@@ -27,7 +54,7 @@
       group: root
     register: terraform_install
 
-- hosts: all
+- hosts: Linux
   become: true
   tasks:
   - name:  copy default html file for site
@@ -49,3 +76,15 @@
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
+- hosts: windows
+  gather_facts: no
+  tasks:
+
+  - name: Ping Windows machines
+    win_ping:
+      data: "Pinging from Ansible"
+    register: ping_result
+
+  - name: Display ping results
+    debug:
+      var: ping_result
