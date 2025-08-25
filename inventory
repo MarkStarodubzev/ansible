@@ -5,6 +5,9 @@ ansibleserver
 [windows]
 10.0.2.4
 
+[workstation]
+10.0.2.15
+
 [windows:vars]
 ansible_connection=winrm
 ansible_user=Administrator
