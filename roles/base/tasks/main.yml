@@ -1,7 +1,7 @@
 
-  - name: set authorized key for simone user
-    tags: always
-    authorized_key:
-      user: simone
-      state: present
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBI0mbXJD/J8oo7AznJoZUJBYYb/F+i4FjtsDWpKaO ansible"
+- name: set authorized key for simone user
+  tags: always
+  authorized_key:
+    user: simone
+    state: present
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBI0mbXJD/J8oo7AznJoZUJBYYb/F+i4FjtsDWpKaO ansible"

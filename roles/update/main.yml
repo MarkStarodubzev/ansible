@@ -1,0 +1,23 @@
+---
+- name: Update Windows Workstations
+  gather_facts: yes
+  tasks:
+    - name: Install all available updates
+      ansible.windows.win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+        reboot: yes
+
+
+- name: Update Linux Workstations
+  become: yes
+  tasks:
+    - name: Update APT packages (Debian/Ubuntu)
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+      when: ansible_os_family == "Debian, Ubuntu"
+
+

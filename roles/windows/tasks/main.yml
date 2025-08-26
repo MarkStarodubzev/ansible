@@ -1,9 +1,9 @@
 - name: Ping Windows machines
-    win_ping:
-      data: "Pinging from Ansible"
-    register: ping_result
+  win_ping:
+    data: "Pinging from Ansible"
+  register: ping_result
 
-  - name: Display ping results
-    debug:
-      var: ping_result
+- name: Display ping results
+  debug:
+    var: ping_result
 
