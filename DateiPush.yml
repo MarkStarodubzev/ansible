@@ -1,0 +1,23 @@
+- name: Push test files to Linux and Windows hosts
+  hosts: all
+  gather_facts: true
+  tasks:
+
+    - name: Create /tmp/testfile on Linux
+      file:
+        path: /tmp/testfile
+        state: touch
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    - name: Ensure C:\Temp exists on Windows
+      win_file:
+        path: C:\Temp
+        state: directory
+      when: ansible_os_family == "Windows"
+
+    - name: Create C:\Temp\testfile.txt on Windows
+      win_file:
+        path: C:\Temp\testfile.txt
+        state: touch
+      when: ansible_os_family == "Windows"

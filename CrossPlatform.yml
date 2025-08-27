@@ -1,0 +1,99 @@
+- name: Cross-Platform Setup
+  hosts: all
+  gather_facts: true
+  tasks:
+
+    # ------------------------
+    # 1️⃣ Linux: Benutzer + Datei
+    # ------------------------
+    - name: Create user 'student' on Linux
+      user:
+        name: student
+        password: "{{ 'Passw0rd' | password_hash('sha512') }}"
+        state: present
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    - name: Create /tmp/testfile on Linux
+      file:
+        path: /tmp/testfile
+        state: touch
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    # ------------------------
+    # 2️⃣ Windows: Benutzer + Datei
+    # ------------------------
+    - name: Create user 'student' on Windows
+      win_user:
+        name: student
+        password: "Passw0rd123!"
+        state: present
+      when: ansible_os_family == "Windows"
+
+    - name: Ensure C:\Temp exists on Windows
+      win_file:
+        path: C:\Temp
+        state: directory
+      when: ansible_os_family == "Windows"
+
+    - name: Create C:\Temp\testfile.txt on Windows
+      win_file:
+        path: C:\Temp\testfile.txt
+        state: touch
+      when: ansible_os_family == "Windows"
+
+    # ------------------------
+    # 3️⃣ Linux: Paket + Service
+    # ------------------------
+    - name: Install nginx on Linux
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    - name: Ensure nginx is running on Linux
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    # ------------------------
+    # 4️⃣ Windows: Paket + Service
+    # ------------------------
+    - name: Install IIS on Windows
+      win_feature:
+        name: Web-Server
+        state: present
+      when: ansible_os_family == "Windows"
+
+    - name: Ensure IIS service is running on Windows
+      win_service:
+        name: W3SVC
+        start_mode: auto
+        state: started
+      when: ansible_os_family == "Windows"
+
+    # ------------------------
+    # 5️⃣ Template Deploy
+    # ------------------------
+    - name: Deploy index.html template on Linux
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      vars:
+        greeting: "Hello from Ansible on Linux!"
+      become: yes
+      when: ansible_os_family != "Windows"
+
+    - name: Deploy index.html template on Windows
+      win_template:
+        src: index.html.j2
+        dest: C:\inetpub\wwwroot\index.html
+      vars:
+        greeting: "Hello from Ansible on Windows!"
+      when: ansible_os_family == "Windows"
