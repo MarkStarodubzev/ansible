@@ -17,7 +17,7 @@
 
     - name: Reboot if kernel upgraded
       reboot:
-        reboot_timeout: 500
+        reboot_timeout: 200
         test_command: whoami
 
     - name: Check for further updates
