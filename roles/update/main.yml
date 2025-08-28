@@ -17,7 +17,7 @@
           - SecurityUpdates
           - CriticalUpdates
           - UpdateRollups
-        reboot: no   # kein automatischer Neustart, wird optional am Ende gemacht
+        reboot: yes   # kein automatischer Neustart, wird optional am Ende gemacht
 
 - name: Update Linux Workstations
   hosts: Linux
@@ -47,7 +47,7 @@
       ansible.builtin.reboot:
         msg: "Reboot initiated by Ansible after updates"
         reboot_timeout: 600
-      when: ansible_os_family in ["Debian", "RedHat"] and reboot_after_update | default(false)
+      when: ansible_os_family in ["Debian", "RedHat", "Ubuntu"] and reboot_after_update | default(false)
 
     - name: Reboot Windows
       ansible.windows.win_reboot:
