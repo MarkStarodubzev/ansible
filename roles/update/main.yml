@@ -1,38 +1,46 @@
 ---
 - name: Update Windows Workstations
-  hosts: Windows
+  hosts: windows
   gather_facts: yes
   strategy: free
+  serial: 3  # optional: 3 Hosts gleichzeitig patchen
   tasks:
+    - name: Reboot Windows if pending
+      ansible.windows.win_reboot:
+        msg: "Pending reboot from previous updates"
+        reboot_timeout: 1200
+      when: ansible_facts['windows_reboot_pending'] | default(false)
+
     - name: Install Windows Security Updates
       ansible.windows.win_updates:
         category_names:
           - SecurityUpdates
-        reboot: yes   # skip auto-reboot during updates
+        reboot: no   # kein automatischer Neustart, wird optional am Ende gemacht
 
 - name: Update Linux Workstations
-  hosts: Linux
+  hosts: linux
   become: yes
   gather_facts: yes
   strategy: free
+  serial: 3  # optional: 3 Hosts gleichzeitig patchen
   tasks:
     - name: Update APT packages (Debian/Ubuntu)
       ansible.builtin.apt:
         update_cache: yes
         upgrade: dist
       when: ansible_os_family == "Debian"
-    
+
     - name: Update YUM packages (RHEL/CentOS/Fedora)
       ansible.builtin.yum:
         name: "*"
         state: latest
       when: ansible_os_family == "RedHat"
 
-# Optional reboot for all hosts
+# Optionaler Reboot für alle Hosts
 - name: Reboot Hosts if requested
   hosts: all
   become: yes
-  gather_facts: yes
+  gather_facts: yes  # wichtig, damit ansible_os_family verfügbar ist
   tasks:
     - name: Reboot Linux
       ansible.builtin.reboot:
