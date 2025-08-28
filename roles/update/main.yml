@@ -1,6 +1,6 @@
 ---
 - name: Update Windows Workstations
-  hosts: windows
+  hosts: Windows
   gather_facts: yes
   strategy: free
   serial: 3  # optional: 3 Hosts gleichzeitig patchen
@@ -18,7 +18,7 @@
         reboot: no   # kein automatischer Neustart, wird optional am Ende gemacht
 
 - name: Update Linux Workstations
-  hosts: linux
+  hosts: Linux
   become: yes
   gather_facts: yes
   strategy: free
