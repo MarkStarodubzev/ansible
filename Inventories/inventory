@@ -1,6 +1,5 @@
 [Linux]
 10.0.2.15
-ansibleserver
 
 [Windows]
 10.0.2.4
