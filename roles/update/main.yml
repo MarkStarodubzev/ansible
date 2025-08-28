@@ -1,29 +1,47 @@
 ---
 - name: Update Windows Workstations
-  hosts: Windows
+  hosts: windows
   gather_facts: yes
-  strategy: free        # run in parallel on multiple hosts
+  strategy: free
   tasks:
     - name: Install Windows Security Updates
       ansible.windows.win_updates:
         category_names:
           - SecurityUpdates
-        reboot: yes      # change to yes if you want auto-reboot
+        reboot: no   # skip auto-reboot during updates
 
 - name: Update Linux Workstations
-  hosts: Linux
+  hosts: linux
   become: yes
   gather_facts: yes
-  strategy: free        # run in parallel on multiple hosts
+  strategy: free
   tasks:
     - name: Update APT packages (Debian/Ubuntu)
       ansible.builtin.apt:
         update_cache: yes
         upgrade: dist
-      when: ansible_os_family == "Debian, Ubuntu"
+      when: ansible_os_family == "Debian"
     
     - name: Update YUM packages (RHEL/CentOS/Fedora)
       ansible.builtin.yum:
         name: "*"
         state: latest
       when: ansible_os_family == "RedHat"
+
+# Optional reboot for all hosts
+- name: Reboot Hosts if requested
+  hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Reboot Linux
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible after updates"
+        reboot_timeout: 600
+      when: ansible_os_family in ["Debian", "RedHat"] and reboot_after_update | default(false)
+
+    - name: Reboot Windows
+      ansible.windows.win_reboot:
+        msg: "Reboot initiated by Ansible after updates"
+        reboot_timeout: 1200
+      when: ansible_os_family == "Windows" and reboot_after_update | default(false)
