@@ -2,24 +2,28 @@
 - name: Update Windows Workstations
   hosts: Windows
   gather_facts: yes
+  strategy: free        # run in parallel on multiple hosts
   tasks:
-    - name: Install all available updates
+    - name: Install Windows Security Updates
       ansible.windows.win_updates:
         category_names:
           - SecurityUpdates
-          - CriticalUpdates
-          - UpdateRollups
-        reboot: yes
-
+        reboot: yes      # change to yes if you want auto-reboot
 
 - name: Update Linux Workstations
   hosts: Linux
   become: yes
+  gather_facts: yes
+  strategy: free        # run in parallel on multiple hosts
   tasks:
     - name: Update APT packages (Debian/Ubuntu)
       ansible.builtin.apt:
         update_cache: yes
         upgrade: dist
       when: ansible_os_family == "Debian, Ubuntu"
-
-
+    
+    - name: Update YUM packages (RHEL/CentOS/Fedora)
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
