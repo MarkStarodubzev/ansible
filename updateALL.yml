@@ -34,12 +34,7 @@
   hosts: Windows
   gather_facts: yes
   tasks:
-    - name: Install PSWindowsUpdate module if missing
-      win_shell: |
-        Install-Module -Name PSWindowsUpdate -Force -Confirm:$false
-      args:
-        executable: powershell
-
+  
     - name: Check for updates
       win_updates:
         category_names:
