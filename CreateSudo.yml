@@ -1,0 +1,19 @@
+---
+- name: Enable Passwordless Sudo for ansible user
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Ensure ansible user exists
+      ansible.builtin.user:
+        name: ansible
+        state: present
+
+    - name: Add ansible to sudoers with NOPASSWD
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/ansible
+        content: "ansible ALL=(ALL) NOPASSWD: ALL\n"
+        owner: root
+        group: root
+        mode: '0440'
