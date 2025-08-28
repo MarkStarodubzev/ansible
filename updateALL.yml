@@ -1,0 +1,62 @@
+---
+- name: Update Ubuntu servers
+  hosts: ubuntu
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+
+    - name: Reboot if kernel upgraded
+      reboot:
+        reboot_timeout: 600
+        test_command: whoami
+
+    - name: Check for further updates
+      apt:
+        update_cache: yes
+        upgrade: yes
+      register: ubuntu_updates
+
+    - name: Show available updates
+      debug:
+        msg: "{{ ubuntu_updates }}"
+
+- name: Update Windows servers
+  hosts: windows
+  gather_facts: yes
+  tasks:
+    - name: Install PSWindowsUpdate module if missing
+      win_shell: |
+        Install-Module -Name PSWindowsUpdate -Force -Confirm:$false
+      args:
+        executable: powershell
+
+    - name: Check for updates
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+        state: searched
+      register: windows_pending
+
+    - name: Install updates
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+        state: installed
+        reboot: yes
+      register: windows_updates
+
+    - name: Show installed updates
+      debug:
+        msg: "{{ windows_updates }}"
