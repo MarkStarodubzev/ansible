@@ -8,7 +8,7 @@
       ansible.windows.win_updates:
         category_names:
           - SecurityUpdates
-        reboot: no   # skip auto-reboot during updates
+        reboot: yes   # skip auto-reboot during updates
 
 - name: Update Linux Workstations
   hosts: Linux
