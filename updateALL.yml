@@ -1,6 +1,6 @@
 ---
 - name: Update Ubuntu servers
-  hosts: ubuntu
+  hosts: Linux
   gather_facts: yes
   become: yes
   tasks:
@@ -31,7 +31,7 @@
         msg: "{{ ubuntu_updates }}"
 
 - name: Update Windows servers
-  hosts: windows
+  hosts: Windows
   gather_facts: yes
   tasks:
     - name: Install PSWindowsUpdate module if missing
