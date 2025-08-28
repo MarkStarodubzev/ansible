@@ -1,5 +1,6 @@
 ---
 - name: Update Windows Workstations
+  hosts: windows
   gather_facts: yes
   tasks:
     - name: Install all available updates
@@ -12,6 +13,7 @@
 
 
 - name: Update Linux Workstations
+  hosts: linux
   become: yes
   tasks:
     - name: Update APT packages (Debian/Ubuntu)
