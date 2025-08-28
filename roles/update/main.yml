@@ -41,7 +41,6 @@
 # Optionaler Reboot für alle Hosts
 - name: Reboot Hosts if requested
   hosts: all
-  become: yes
   gather_facts: yes  # wichtig, damit ansible_os_family verfügbar ist
   tasks:
     - name: Reboot Linux
