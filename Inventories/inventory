@@ -1,6 +1,5 @@
 [Linux]
 10.0.2.15
-ansibleserver
 
 [Windows]
 10.0.2.4
@@ -8,7 +7,6 @@ ansibleserver
 [Workstation]
 10.0.2.15
 10.0.2.4
-ansibleserver
 
 [Windows:vars]
 ansible_connection=winrm
